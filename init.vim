@@ -146,6 +146,8 @@ if !exists('g:vscode')
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
 
+  Plug 'neovim/nvim-lspconfig'
+
   call plug#end()
 	let g:user_emmet_leader_key='<A-c>'
   " Basic settings
