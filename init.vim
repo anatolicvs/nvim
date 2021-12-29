@@ -356,7 +356,8 @@ if !exists('g:vscode')
     \ 'coc-prettier',
     \ 'coc-json',
     \ 'coc-angular',
-    \ 'coc-vimtex'
+    \ 'coc-vimtex',
+     \ 'coc-python'
     \ ]
 
   " From Coc Readme
@@ -461,4 +462,5 @@ if !exists('g:vscode')
   set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 endif
 
+" set guifont=DroidSansMono_Nerd_Font:h11
 set guifont=DroidSansMono_Nerd_Font:h11
