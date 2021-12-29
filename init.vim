@@ -464,12 +464,7 @@ if !exists('g:vscode')
   set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 endif
 
-<<<<<<< HEAD
-" set guifont=DroidSansMono_Nerd_Font:h11
 set guifont=DroidSansMono_Nerd_Font:h11
-=======
-set guifont=DroidSansMono_Nerd_Font:h11
-
 
 lua << EOF
 local nvim_lsp = require('lspconfig')
@@ -519,4 +514,3 @@ for _, lsp in ipairs(servers) do
   }
 end
 EOF
->>>>>>> 4aa2f92f3e2382acf9dd8f80fb7111dcef450b41
