@@ -300,7 +300,6 @@ if !exists('g:vscode')
   endif
  endfunction
 
-
   " open new split panes to right and below
   set splitright
   set splitbelow
@@ -314,7 +313,6 @@ if !exists('g:vscode')
     resize 10
   endfunction
   nnoremap <C-t> :call OpenTerminal()<CR>
-
 
   " use alt+hjkl to move between split/vsplit panels
   tnoremap <A-h> <C-\><C-n><C-w>h
