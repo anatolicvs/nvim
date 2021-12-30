@@ -688,6 +688,7 @@ elseif has('win32') || has('win64')
 lua <<EOF
 require 'nvim-treesitter.install'.compilers = { "clang" }
 EOF
+
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
 
@@ -758,10 +759,10 @@ require'treesitter-context'.setup{
             'function',
             'method',
             -- 'for', -- These won't appear in the context
-            -- 'while',
-            -- 'if',
-            -- 'switch',
-            -- 'case',
+            'while',
+            'if',
+            'switch',
+            'case',
         },
         -- Example for a specific filetype.
         -- If a pattern is missing, *open a PR* so everyone can benefit.
