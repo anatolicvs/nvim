@@ -594,3 +594,35 @@ lua <<EOF
     })
   })
 EOF
+
+" ------Treesitter SETTINGS------
+if has('unix')
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  -- One of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = {"python","c", "rust"},
+  -- Install languages synchronously (only applied to `ensure_installed`)
+  sync_install = true,
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = true,
+  },
+  indent = {
+    enable = true
+  },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "gnn",
+      node_incremental = "grn",
+      scope_incremental = "grc",
+      node_decremental = "grm",
+    },
+  },
+}
+EOF
+elseif has('win32') || has('win64')
+endif
