@@ -104,9 +104,11 @@ if !exists('g:vscode')
   Plug 'tomasiser/vim-code-dark'
   " devicons
   Plug 'kyazdani42/nvim-web-devicons'
-
+  " Syntax highlighting
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
-  
+  Plug 'nvim-treesitter/nvim-treesitter-refactor'
+  Plug 'romgrk/nvim-treesitter-context'
+
   " Center text
   Plug 'junegunn/goyo.vim'
   " Code Completion
@@ -122,13 +124,13 @@ if !exists('g:vscode')
   " Commenting
   Plug 'tpope/vim-commentary'
   " Syntax highlighting
-  Plug 'yuezk/vim-js'
-  Plug 'maxmellon/vim-jsx-pretty'
-  Plug 'HerringtonDarkholme/yats.vim'
-	Plug 'rust-lang/rust.vim'
-  Plug 'vim-pandoc/vim-pandoc-syntax'
+  " Plug 'yuezk/vim-js'
+  " Plug 'maxmellon/vim-jsx-pretty'
+  " Plug 'HerringtonDarkholme/yats.vim'
+	" Plug 'rust-lang/rust.vim'
+  " Plug 'vim-pandoc/vim-pandoc-syntax'
 	" Motions
-	Plug 'justinmk/vim-sneak'
+	" Plug 'justinmk/vim-sneak'
 	" Misc
   Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
   Plug 'voldikss/vim-floaterm'
@@ -153,6 +155,7 @@ if !exists('g:vscode')
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
 
+  " LSP Support
   Plug 'neovim/nvim-lspconfig'
   Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'hrsh7th/cmp-buffer'
@@ -603,7 +606,7 @@ set foldexpr=nvim_treesitter#foldexpr()
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-  ensure_installed = {"python","c", "rust"},
+  ensure_installed = {"python"},
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = true,
   highlight = {
@@ -622,7 +625,150 @@ require'nvim-treesitter.configs'.setup {
       node_decremental = "grm",
     },
   },
+  refactor = {
+    highlight_definitions = { enable = true },
+     highlight_current_scope = { enable = true },
+     smart_rename = {
+      enable = true,
+      keymaps = {
+        smart_rename = "grr",
+      },
+    },
+    navigation = {
+      enable = true,
+      keymaps = {
+        goto_definition = "gnd",
+        list_definitions = "gnD",
+        list_definitions_toc = "gO",
+        goto_next_usage = "<a-*>",
+        goto_previous_usage = "<a-#>",
+      },
+    },
+    rainbow = {
+      enable = true,
+      -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+      extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+      max_file_lines = nil, -- Do not enable for files with more than n lines, int
+      -- colors = {}, -- table of hex strings
+      -- termcolors = {} -- table of colour name strings
+    },
+  },
 }
 EOF
+lua <<EOF
+require'treesitter-context'.setup{
+    enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+    throttle = true, -- Throttles plugin updates (may improve performance)
+    max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+    patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+        -- For all filetypes
+        -- Note that setting an entry here replaces all other patterns for this entry.
+        -- By setting the 'default' entry below, you can control which nodes you want to
+        -- appear in the context window.
+        default = {
+            'class',
+            'function',
+            'method',
+            -- 'for', -- These won't appear in the context
+            -- 'while',
+            -- 'if',
+            -- 'switch',
+            -- 'case',
+        },
+        -- Example for a specific filetype.
+        -- If a pattern is missing, *open a PR* so everyone can benefit.
+        --   rust = {
+        --       'impl_item',
+        --   },
+    },
+}
+EOF
+
 elseif has('win32') || has('win64')
+lua <<EOF
+require 'nvim-treesitter.install'.compilers = { "clang" }
+EOF
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  -- One of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = {"python"},
+  -- Install languages synchronously (only applied to `ensure_installed`)
+  sync_install = true,
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = true,
+  },
+  indent = {
+    enable = true
+  },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "gnn",
+      node_incremental = "grn",
+      scope_incremental = "grc",
+      node_decremental = "grm",
+    },
+  },
+  refactor = {
+    highlight_definitions = { enable = true },
+     highlight_current_scope = { enable = true },
+     smart_rename = {
+      enable = true,
+      keymaps = {
+        smart_rename = "grr",
+      },
+    },
+    navigation = {
+      enable = true,
+      keymaps = {
+        goto_definition = "gnd",
+        list_definitions = "gnD",
+        list_definitions_toc = "gO",
+        goto_next_usage = "<a-*>",
+        goto_previous_usage = "<a-#>",
+      },
+    },
+    rainbow = {
+      enable = true,
+      -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+      extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+      max_file_lines = nil, -- Do not enable for files with more than n lines, int
+      -- colors = {}, -- table of hex strings
+      -- termcolors = {} -- table of colour name strings
+    },
+  },
+}
+EOF
+lua <<EOF
+require'treesitter-context'.setup{
+    enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+    throttle = true, -- Throttles plugin updates (may improve performance)
+    max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+    patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+        -- For all filetypes
+        -- Note that setting an entry here replaces all other patterns for this entry.
+        -- By setting the 'default' entry below, you can control which nodes you want to
+        -- appear in the context window.
+        default = {
+            'class',
+            'function',
+            'method',
+            -- 'for', -- These won't appear in the context
+            -- 'while',
+            -- 'if',
+            -- 'switch',
+            -- 'case',
+        },
+        -- Example for a specific filetype.
+        -- If a pattern is missing, *open a PR* so everyone can benefit.
+        --   rust = {
+        --       'impl_item',
+        --   },
+    },
+}
+EOF
 endif
