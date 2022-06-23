@@ -98,12 +98,17 @@ autocmd FileType markdown inoremap ,f +@fig:
 
 if !exists('g:vscode')
   call plug#begin('~/local/share/nvim/plugged')
+  " devicons
+  Plug 'kyazdani42/nvim-web-devicons'
   " Themes
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
   Plug 'tomasiser/vim-code-dark'
-  " devicons
-  Plug 'kyazdani42/nvim-web-devicons'
+  "Plug 'phanviet/vim-monokai-pro'
+  Plug 'romgrk/doom-one.vim'
+
+  " tab-bar
+  Plug 'romgrk/barbar.nvim'
   " Syntax highlighting
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
   Plug 'nvim-treesitter/nvim-treesitter-refactor'
@@ -112,32 +117,12 @@ if !exists('g:vscode')
   " Center text
   Plug 'junegunn/goyo.vim'
   " Code Completion
-  " Plug 'neoclide/coc.nvim', {'branch': 'release'}
   " Fuzzy find files
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
   " This objectively makes vim better
   Plug 'terryma/vim-multiple-cursors'
-  " Working with tags
-  Plug 'alvan/vim-closetag'
-  Plug 'tpope/vim-surround'
-  " Commenting
-  Plug 'tpope/vim-commentary'
-  " Syntax highlighting
-  " Plug 'yuezk/vim-js'
-  " Plug 'maxmellon/vim-jsx-pretty'
-  " Plug 'HerringtonDarkholme/yats.vim'
-	" Plug 'rust-lang/rust.vim'
-  " Plug 'vim-pandoc/vim-pandoc-syntax'
-	" Motions
-	" Plug 'justinmk/vim-sneak'
-	" Misc
-  Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
-  Plug 'voldikss/vim-floaterm'
-  Plug 'airblade/vim-gitgutter'
-	Plug 'vimwiki/vimwiki'
-	Plug 'tpope/vim-repeat'
-	" Plug 'dhruvasagar/vim-table-mode'
+
 	Plug 'mattn/emmet-vim'
   Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
   Plug 'kassio/neoterm'
@@ -154,6 +139,7 @@ if !exists('g:vscode')
   Plug 'nvim-lua/popup.nvim'
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
+  Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
   " LSP Support
   Plug 'neovim/nvim-lspconfig'
@@ -168,19 +154,21 @@ if !exists('g:vscode')
   Plug 'hrsh7th/vim-vsnip'
 
   " For luasnip users.
-  " Plug 'L3MON4D3/LuaSnip'
-  " Plug 'saadparwaiz1/cmp_luasnip'
+  Plug 'L3MON4D3/LuaSnip'
+  Plug 'saadparwaiz1/cmp_luasnip'
 
   " For ultisnips users.
-  " Plug 'SirVer/ultisnips'
-  " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+  Plug 'SirVer/ultisnips'
+  Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 
   " For snippy users.
-  " Plug 'dcampos/nvim-snippy'
-  " Plug 'dcampos/cmp-snippy'
+  Plug 'dcampos/nvim-snippy'
+  Plug 'dcampos/cmp-snippy'
 
   call plug#end()
+
 	let g:user_emmet_leader_key='<A-c>'
+  
   " Basic settings
   set mouse=a
   syntax on
@@ -374,123 +362,13 @@ if !exists('g:vscode')
  nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
  nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 
+" Some servers have issues with backup files, see #649
+ set nobackup
+ set nowritebackup
 
-  " ------COC SETTINGS------
-  " prettier command for coc
-  " command! -nargs=0 Prettier :CocCommand prettier.formatFile
-  " let g:coc_global_extensions = [
-  "  \ 'coc-snippets',
-  "  \ 'coc-pairs',
-  "  \ 'coc-tsserver',
-  "  \ 'coc-html',
-  "  \ 'coc-css',
-  "  \ 'coc-prettier',
-  "  \ 'coc-json',
-  "  \ 'coc-angular',
-  "  \ 'coc-vimtex',
-  "  \ 'coc-python'
-  "  \ ]
+" don't give |ins-completion-menu| messages.
+ set shortmess+=c
 
-  " From Coc Readme
-  " set updatetime=300
-
-  " Some servers have issues with backup files, see #649
-  set nobackup
-  set nowritebackup
-
-  " don't give |ins-completion-menu| messages.
-  set shortmess+=c
-
-  " always show signcolumns
-  set signcolumn=yes
-
-  " Use tab for trigger completion with characters ahead and navigate.
-  " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-  " inoremap <silent><expr> <TAB>
-  "      \ pumvisible() ? "\<C-n>" :
-  "      \ <SID>check_back_space() ? "\<TAB>" :
-  "      \ coc#refresh()
-  " inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-  function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~# '\s'
-  endfunction
-
-  " Use <c-space> to trigger completion.
-  " inoremap <silent><expr> <c-space> coc#refresh()
-
-  " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
-  " Coc only does snippet and additional edit on confirm.
-  " inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-  " Or use `complete_info` if your vim support it, like:
-  " inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-
-  " Use `[g` and `]g` to navigate diagnostics
-  " nmap <silent> [g <Plug>(coc-diagnostic-prev)
-  " nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-  " Remap keys for gotos
-  " nmap <silent> gd <Plug>(coc-definition)
-  " nmap <silent> gy <Plug>(coc-type-definition)
-  " nmap <silent> gi <Plug>(coc-implementation)
-  " nmap <silent> gr <Plug>(coc-references)
-
-  " Use D to show documentation in preview window
-  " nnoremap <silent> D :call <SID>show_documentation()<CR>
-
-  function! s:show_documentation()
-    if (index(['vim','help'], &filetype) >= 0)
-      execute 'h '.expand('<cword>')
-    else
-      call CocAction('doHover')
-    endif
-  endfunction
-
-" Highlight the symbol and its references when holding the cursor.
-" autocmd CursorHold * silent call CocActionAsync('highlight')
-
-  " Remap for rename current word
-  " nmap <rn> <Plug>(coc-rename)
-
-  " Remap for format selected region
-  " xmap <leader>f  <Plug>(coc-format-selected)
-  " nmap <leader>f  <Plug>(coc-format-selected)
-
-  " augroup mygroup
-  "  autocmd!
-    " Setup formatexpr specified filetype(s).
-    " autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-    " Update signature help on jump placeholder
-    " autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-  " augroup end
-
-  " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-  " xmap <leader>a  <Plug>(coc-codeaction-selected)
-  " nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-  " Remap for do codeAction of current line
-  " nmap <leader>ac  <Plug>(coc-codeaction)
-  " Fix autofix problem of current line
-  " nmap <leader>qf  <Plug>(coc-fix-current)
-
-  " Create mappings for function text object, requires document symbols feature of languageserver.
-  " xmap if <Plug>(coc-funcobj-i)
-  " xmap af <Plug>(coc-funcobj-a)
-  " omap if <Plug>(coc-funcobj-i)
-  " omap af <Plug>(coc-funcobj-a)
-
-  " Use `:Format` to format current buffer
-  " command! -nargs=0 Format :call CocAction('format')
-
-  " Use `:Fold` to fold current buffer
-  " command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-  " use `:OR` for organize import of current buffer
-  " command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
-  " Add status line support, for integration with other plugin, checkout `:h coc-status`
-  " set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 endif
 set completeopt=menu,menuone,noselect
 set guifont=DroidSansMono_Nerd_Font:h11
@@ -540,14 +418,21 @@ for _, lsp in ipairs(servers) do
     on_attach = on_attach,
     flags = {
       debounce_text_changes = 150,
-    }
+    },
+    python = {
+        analysis = {
+          autoSearchPaths = true,
+          diagnosticMode = "workspace",
+          useLibraryCodeForTypes = true
+        }
+      }
   }
 end
 EOF
 
 lua <<EOF
   -- Setup nvim-cmp.
-  local cmp = require'cmp'
+  local cmp = require('cmp')
 
   cmp.setup({
     snippet = {
@@ -600,18 +485,25 @@ EOF
 
 " ------Treesitter SETTINGS------
 if has('unix')
-set foldmethod=expr
-set foldexpr=nvim_treesitter#foldexpr()
+" set foldmethod=expr
+" set foldexpr=nvim_treesitter#foldexpr()
 
 lua <<EOF
+
+require("nvim-treesitter.install").prefer_git = true
+require("nvim-treesitter.install").command_extra_args = {
+    curl = { "--proxy", "<proxy url>" },
+}
+require 'nvim-treesitter.install'.compilers = { "clang" }
+
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-  ensure_installed = {"python"},
+  ensure_installed = {'python'},
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = true,
   highlight = {
     enable = true,
-    additional_vim_regex_highlighting = true,
+    additional_vim_regex_highlighting = false,
   },
   indent = {
     enable = true
@@ -773,3 +665,118 @@ require'treesitter-context'.setup{
 }
 EOF
 endif
+
+" tabbar 
+" Move to previous/next
+nnoremap <silent>    <A-,> :BufferPrevious<CR>
+nnoremap <silent>    <A-.> :BufferNext<CR>
+" Re-order to previous/next
+nnoremap <silent>    <A-<> :BufferMovePrevious<CR>
+nnoremap <silent>    <A->> :BufferMoveNext<CR>
+" Goto buffer in position...
+nnoremap <silent>    <A-1> :BufferGoto 1<CR>
+nnoremap <silent>    <A-2> :BufferGoto 2<CR>
+nnoremap <silent>    <A-3> :BufferGoto 3<CR>
+nnoremap <silent>    <A-4> :BufferGoto 4<CR>
+nnoremap <silent>    <A-5> :BufferGoto 5<CR>
+nnoremap <silent>    <A-6> :BufferGoto 6<CR>
+nnoremap <silent>    <A-7> :BufferGoto 7<CR>
+nnoremap <silent>    <A-8> :BufferGoto 8<CR>
+nnoremap <silent>    <A-9> :BufferLast<CR>
+" Pin/unpin buffer
+nnoremap <silent>    <A-p> :BufferPin<CR>
+" Close buffer
+nnoremap <silent>    <A-c> :BufferClose<CR>
+" Wipeout buffer
+"                          :BufferWipeout<CR>
+" Close commands
+"                          :BufferCloseAllButCurrent<CR>
+"                          :BufferCloseAllButPinned<CR>
+"                          :BufferCloseBuffersLeft<CR>
+"                          :BufferCloseBuffersRight<CR>
+" Magic buffer-picking mode
+nnoremap <silent> <C-s>    :BufferPick<CR>
+" Sort automatically by...
+nnoremap <silent> <Space>bb :BufferOrderByBufferNumber<CR>
+nnoremap <silent> <Space>bd :BufferOrderByDirectory<CR>
+nnoremap <silent> <Space>bl :BufferOrderByLanguage<CR>
+nnoremap <silent> <Space>bw :BufferOrderByWindowNumber<CR>
+
+" Other:
+" :BarbarEnable - enables barbar (enabled by default)
+" :BarbarDisable - very bad command, should never be used
+
+" NOTE: If barbar's option dict isn't created yet, create it
+let bufferline = get(g:, 'bufferline', {})
+
+" New tabs are opened next to the currently selected tab.
+" Enable to insert them in buffer number order.
+let bufferline.add_in_buffer_number_order = v:false
+
+" Enable/disable animations
+let bufferline.animation = v:true
+
+" Enable/disable auto-hiding the tab bar when there is a single buffer
+let bufferline.auto_hide = v:false
+
+" Enable/disable current/total tabpages indicator (top right corner)
+let bufferline.tabpages = v:true
+
+" Enable/disable close button
+let bufferline.closable = v:true
+
+" Enables/disable clickable tabs
+"  - left-click: go to buffer
+"  - middle-click: delete buffer
+let bufferline.clickable = v:true
+
+" Excludes buffers from the tabline
+let bufferline.exclude_ft = ['javascript']
+let bufferline.exclude_name = ['package.json']
+
+" Enable/disable icons
+" if set to 'buffer_number', will show buffer number in the tabline
+" if set to 'numbers', will show buffer index in the tabline
+" if set to 'both', will show buffer index and icons in the tabline
+let bufferline.icons = v:true
+
+" Sets the icon's highlight group.
+" If false, will use nvim-web-devicons colors
+let bufferline.icon_custom_colors = v:false
+
+" Configure icons on the bufferline.
+let bufferline.icon_separator_active = '▎'
+let bufferline.icon_separator_inactive = '▎'
+let bufferline.icon_close_tab = ''
+let bufferline.icon_close_tab_modified = '●'
+let bufferline.icon_pinned = '車'
+
+" If true, new buffers will be inserted at the start/end of the list.
+" Default is to insert after current buffer.
+let bufferline.insert_at_start = v:false
+let bufferline.insert_at_end = v:false
+
+" Sets the maximum padding width with which to surround each tab.
+let bufferline.maximum_padding = 4
+
+" Sets the maximum buffer name length.
+let bufferline.maximum_length = 30
+
+" If set, the letters for each buffer in buffer-pick mode will be
+" assigned based on their name. Otherwise or in case all letters are
+" already assigned, the behavior is to assign letters in order of
+" usability (see order below)
+let bufferline.semantic_letters = v:true
+
+" New buffer letters are assigned in this order. This order is
+" optimal for the qwerty keyboard layout but might need adjustement
+" for other layouts.
+let bufferline.letters =
+  \ 'asdfjkl;ghnmxcvbziowerutyqpASDFJKLGHNMXCVBZIOWERUTYQP'
+
+" Sets the name of unnamed buffers. By default format is "[Buffer X]"
+" where X is the buffer number. But only a static string is accepted here.
+let bufferline.no_name_title = v:null
+
+" Tabbar highlighting 
+let g:doom_one_terminal_colors = v:true
